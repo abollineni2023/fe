@@ -1,0 +1,98 @@
+<div class="dashboard-wrapper">
+  <aside class="sidebar">
+    <div>
+      <div class="sidebar-logo">
+        <img src="../assets/images/nexzenlogo.png" alt="NexZenTek Logo" class="logo" />
+      </div>
+
+      <nav class="menu">
+        <ul>
+          <li (click)="setActiveSection('summary')" [class.active]="activeSection === 'summary'">Home</li>
+          <li (click)="setActiveSection('users')" [class.active]="activeSection === 'users'">Registered Users</li>
+          <li (click)="setActiveSection('events')" [class.active]="activeSection === 'events'">Events</li>
+          <li (click)="logout()">Logout</li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- Admin Info at the Bottom -->
+    <div class="admin-info">
+      <div class="admin-avatar"></div>
+      <span class="admin-name">Admin</span>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="header">
+      <h2 *ngIf="activeSection === 'summary'">Dashboard Summary</h2>
+      <h2 *ngIf="activeSection === 'users'">User Management</h2>
+    </header>
+
+    <!-- Summary Section -->
+    <section *ngIf="activeSection === 'summary'" class="summary-cards">
+      <div class="card-background">
+        <div class="card-block" *ngFor="let stat of summaryStats">
+          <h4>{{ stat.label }}</h4>
+          <p class="count">{{ stat.count }}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Users Section -->
+    <section *ngIf="activeSection === 'users'" class="users-section">
+      <div class="section-header">
+        <h3>Registered Users</h3>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search by name, email..."
+          [(ngModel)]="searchText"
+          (input)="applyFilter()"
+        />
+      </div>
+
+      <div class="table-wrapper">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th (click)="sortBy('no')">S.No <i [ngClass]="getSortIcon('no')"></i></th>
+              <th (click)="sortBy('name')">Name <i [ngClass]="getSortIcon('name')"></i></th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>City</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of pagedUsers">
+              <td>{{ user.no }}</td>
+              <td>{{ user.name }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.phone }}</td>
+              <td>{{ user.city }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <nav class="pagination-container">
+        <ul class="pagination">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <a class="page-link" (click)="changePage(currentPage - 1)">Previous</a>
+          </li>
+          <li class="page-item" *ngFor="let page of pages" [class.active]="page === currentPage">
+            <a class="page-link" (click)="changePage(page)">{{ page }}</a>
+          </li>
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <a class="page-link" (click)="changePage(currentPage + 1)">Next</a>
+          </li>
+        </ul>
+      </nav>
+    </section>
+    <!-- event section  -->
+    <section *ngIf="activeSection === 'events'" class="events-section">
+  <app-events></app-events>
+</section>
+
+  </main>
+</div>
